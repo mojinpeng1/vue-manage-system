@@ -7,12 +7,11 @@
             background-color="#324157"
             text-color="#bfcbd9"
             active-text-color="#20a0ff"
-            unique-opened
             router
         >
-            <template v-for="item in items">
-                <template v-if="item.subs">
-                    <el-submenu :index="item.index" :key="item.index">
+              <template v-for="item in items">
+               
+                    <el-submenu  v-if="item.subs" :index="item.index" :key="item.index">
                         <template slot="title">
                             <i :class="item.icon"></i>
                             <span slot="title">{{ item.title }}</span>
@@ -37,14 +36,16 @@
                             >{{ subItem.title }}</el-menu-item>
                         </template>
                     </el-submenu>
-                </template>
-                <template v-else>
-                    <el-menu-item :index="item.index" :key="item.index">
+             
+                     <!-- 只存在一级目录 -->
+                    <el-menu-item v-else :index="item.index" :key="item.index">
                         <i :class="item.icon"></i>
                         <span slot="title">{{ item.title }}</span>
                     </el-menu-item>
-                </template>
             </template>
+
+           
+            
         </el-menu>
     </div>
 </template>
@@ -60,6 +61,11 @@ export default {
                     icon: 'el-icon-lx-home',
                     index: 'dashboard',
                     title: '系统首页'
+                },
+                {
+                    icon: 'el-icon-lx-redpacket_fill',
+                    index: '/donate',
+                    title: '支持作者'
                 },
                 {
                     icon: 'el-icon-lx-cascades',
@@ -144,17 +150,13 @@ export default {
                             title: '404页面'
                         }
                     ]
-                },
-                {
-                    icon: 'el-icon-lx-redpacket_fill',
-                    index: '/donate',
-                    title: '支持作者'
                 }
             ]
         };
     },
     computed: {
         onRoutes() {
+            console.log(this.$route.path);
             return this.$route.path.replace('/', '');
         }
     },

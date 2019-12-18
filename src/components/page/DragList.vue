@@ -22,6 +22,8 @@
                         </transition-group>
                     </draggable>
                 </div>
+
+
                 <div class="drag-box-item">
                     <div class="item-title">doing</div>
                     <draggable v-model="doing" @remove="removeHandle" :options="dragOptions">
@@ -32,6 +34,8 @@
                         </transition-group>
                     </draggable>
                 </div>
+
+                
                 <div class="drag-box-item">
                     <div class="item-title">done</div>
                     <draggable v-model="done" @remove="removeHandle" :options="dragOptions">

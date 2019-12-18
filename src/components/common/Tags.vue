@@ -54,6 +54,8 @@
                 const curItem = this.tagsList.filter(item => {
                     return item.path === this.$route.fullPath;
                 })
+                console.log(1)
+                console.log(curItem);
                 this.tagsList = curItem;
             },
             // 设置标签

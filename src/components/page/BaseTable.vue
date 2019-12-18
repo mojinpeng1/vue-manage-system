@@ -132,11 +132,12 @@ export default {
             fetchData(this.query).then(res => {
                 console.log(res);
                 this.tableData = res.list;
-                this.pageTotal = res.pageTotal || 50;
+                this.pageTotal = res.totalSzie || 50;
             });
         },
         // 触发搜索按钮
         handleSearch() {
+            console.log(this.query);
             this.$set(this.query, 'pageIndex', 1);
             this.getData();
         },

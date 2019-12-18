@@ -1,3 +1,4 @@
+
 import Vue from 'vue';
 import Router from 'vue-router';
 
@@ -32,7 +33,7 @@ export default new Router({
                 {
                     path: '/tabs',
                     component: () => import(/* webpackChunkName: "tabs" */ '../components/page/Tabs.vue'),
-                    meta: { title: 'tab选项卡' }
+                    meta: { title: '信息查看' }
                 },
                 {
                     path: '/form',
@@ -45,12 +46,12 @@ export default new Router({
                     component: () => import(/* webpackChunkName: "editor" */ '../components/page/VueEditor.vue'),
                     meta: { title: '富文本编辑器' }
                 },
-                {
-                    // markdown组件
-                    path: '/markdown',
-                    component: () => import(/* webpackChunkName: "markdown" */ '../components/page/Markdown.vue'),
-                    meta: { title: 'markdown编辑器' }
-                },
+                // {
+                //     // markdown组件
+                //     path: '/markdown',
+                //     component: () => import(/* webpackChunkName: "markdown" */ '../components/page/Markdown.vue'),
+                //     meta: { title: 'markdown编辑器' }
+                // },
                 {
                     // 图片上传组件
                     path: '/upload',

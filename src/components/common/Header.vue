@@ -15,27 +15,32 @@
                     </el-tooltip>
                 </div>
                 <!-- 消息中心 -->
-                <div class="btn-bell">
-                    <el-tooltip
-                        effect="dark"
-                        :content="message?`有${message}条未读消息`:`消息中心`"
-                        placement="bottom"
-                    >
-                        <router-link to="/tabs">
-                            <i class="el-icon-bell"></i>
-                        </router-link>
-                    </el-tooltip>
-                    <span class="btn-bell-badge" v-if="message"></span>
-                </div>
+                <el-badge :value="message" :hidden="changeHidden" :max="99" class="item">
+                    <div class="btn-bell">
+                        <el-tooltip
+                            effect="dark"
+                            :content="message?`有${message}条未读消息`:`消息中心`"
+                            placement="bottom"
+                        >
+                            <router-link to="/tabs">
+                                <i class="el-icon-bell"></i>
+                            </router-link>
+                        </el-tooltip>
+                       
+                    </div>
+             </el-badge>
+
                 <!-- 用户头像 -->
                 <div class="user-avator">
-                    <img src="../../assets/img/img.jpg" />
+                    <!-- <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar> -->
+                    <el-avatar :src="image"></el-avatar>
+                  
                 </div>
                 <!-- 用户名下拉菜单 -->
-                <el-dropdown class="user-name" trigger="click" @command="handleCommand">
+                <el-dropdown class="user-name" trigger="click"  @command="handleCommand">
                     <span class="el-dropdown-link">
                         {{username}}
-                        <i class="el-icon-caret-bottom"></i>
+                        <i :class="cartIcon"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown">
                         <a href="https://github.com/lin-xin/vue-manage-system" target="_blank">
@@ -50,24 +55,33 @@
 </template>
 <script>
 import bus from '../common/bus';
+import imgUrl from '../../assets/img/img.jpg'
 export default {
     data() {
         return {
             collapse: false,
             fullscreen: false,
             name: 'linxin',
-            message: 2
+            message: 123,
+            image:imgUrl,
+            cartIcon:'el-icon-caret-bottom'
+            
         };
     },
     computed: {
         username() {
             let username = localStorage.getItem('ms_username');
             return username ? username : this.name;
-        }
+        },
+        changeHidden(){
+            return !this.message>0;
+        },
+        
     },
     methods: {
         // 用户名下拉菜单选择事件
         handleCommand(command) {
+           
             if (command == 'loginout') {
                 localStorage.removeItem('ms_username');
                 this.$router.push('/login');
