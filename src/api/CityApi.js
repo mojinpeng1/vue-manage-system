@@ -6,6 +6,10 @@ const CITY_API={
     getCitys:{
         method:'get',
         url:'/city/findCitys'
+    },
+    queryCitys:{
+        method:'post',
+        url:'/city/queryCitys'
     }
 }
 

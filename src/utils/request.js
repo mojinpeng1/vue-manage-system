@@ -5,7 +5,7 @@ import { Loading, Message } from 'element-ui';
 
 const service = axios.create({
     baseURL: 'http://localhost:8080/',
-    timeout: 1000
+    timeout: 5000
 });
 
 // 封装所有请求api进入
@@ -53,7 +53,7 @@ for (let key in cityService) {
 let loading;
 // 页面加载效果
 function startLoading() {
-    Loading.service({
+   loading= Loading.service({
         lock: true,
         text: '加载中...',
         spinner: 'el-icon-loading',
@@ -69,26 +69,32 @@ function endLoading() {
 service.interceptors.request.use(
     // 请求前
     req => {
-        // startLoading();
+        startLoading();
         return req;
     },
     // 请求错误
     err => {
-        // endLoading();
+        endLoading();
         Message.error("错了哦,这是一条请求错误提示!");
     })
 
 service.interceptors.response.use(
     // 响应成功
     res => {
-        // endLoading();
-        console.log(res.data)
-        return res.data;
+        endLoading();
+        // 服务器正确返回
+        if(res.data.code === 1){
+            console.log(res.data);
+            return res.data;
+        }else{
+            //服务器错误返回
+            Message.error(res.data.Message)
+        }
 
     },
     // 响应错误
     err => {
-        // endLoading();
+        endLoading();
         console.log(err);
         Message.error('服务器内部错误...');
     }

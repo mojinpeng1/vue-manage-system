@@ -1,12 +1,5 @@
 <template>
     <div>
-        <div class="crumbs">
-            <el-breadcrumb separator="/">
-                <el-breadcrumb-item>
-                    <i class="el-icon-lx-cascades"></i> 基础表格
-                </el-breadcrumb-item>
-            </el-breadcrumb>
-        </div>
         <div class="container">
             <div class="handle-box">
                 <el-button
@@ -27,35 +20,22 @@
                 border
                 class="table"
                 ref="multipleTable"
+                :stripe="true"
+                max-height="400"
                 header-cell-class-name="table-header"
                 @selection-change="handleSelectionChange"
             >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
-                <el-table-column prop="name" label="用户名"></el-table-column>
-                <el-table-column label="账户余额">
-                    <template slot-scope="scope">￥{{scope.row.money}}</template>
-                </el-table-column>
-                <el-table-column label="头像(查看大图)" align="center">
-                    <template slot-scope="scope">
-                        <el-image
-                            class="table-td-thumb"
-                            :src="scope.row.thumb"
-                            :preview-src-list="[scope.row.thumb]"
-                        ></el-image>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="address" label="地址"></el-table-column>
-                <el-table-column label="状态" align="center">
-                    <template slot-scope="scope">
-                        <el-tag
-                            :type="scope.row.state==='成功'?'success':(scope.row.state==='失败'?'danger':'')"
-                        >{{scope.row.state}}</el-tag>
-                    </template>
-                </el-table-column>
+                <el-table-column prop="cid" label="ID" width="55" align="center"></el-table-column>
+                <el-table-column prop="adCode" label="地方编码"></el-table-column>
+                <el-table-column prop="name" label="名称"></el-table-column>
 
-                <el-table-column prop="date" label="注册时间"></el-table-column>
-                <el-table-column label="操作" width="180" align="center">
+                <el-table-column prop="cityCode" label="城市编码"></el-table-column>
+                <el-table-column label="Level" prop="level"></el-table-column>
+
+                <el-table-column prop="center" label="经纬度" width="280"></el-table-column>
+
+                <!-- <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
                         <el-button
                             type="text"
@@ -69,16 +49,17 @@
                             @click="handleDelete(scope.$index, scope.row)"
                         >删除</el-button>
                     </template>
-                </el-table-column>
+                </el-table-column>-->
             </el-table>
             <div class="pagination">
                 <el-pagination
-                    background
-                    layout="total, prev, pager, next"
-                    :current-page="query.pageIndex"
-                    :page-size="query.pageSize"
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="currentPage"
+                    :page-sizes="[20, 50, 100, 200]"
+                    :page-size="pageSize"
+                    layout="total, sizes, prev, pager, next, jumper"
                     :total="pageTotal"
-                    @current-change="handlePageChange"
                 ></el-pagination>
             </div>
         </div>
@@ -117,10 +98,12 @@ export default {
             multipleSelection: [],
             delList: [],
             editVisible: false,
-            pageTotal: 0,
+            pageTotal: 10,
             form: {},
             idx: -1,
-            id: -1
+            id: -1,
+            currentPage:1,
+            pageSize:10
         };
     },
     created() {
@@ -128,13 +111,37 @@ export default {
     },
     methods: {
         // 获取 easy-mock 的模拟数据
-        getData() {
-            fetchData(this.query).then(res => {
-                console.log(res);
-                this.tableData = res.list;
-                this.pageTotal = res.totalSzie || 50;
-            });
+      async  getData() {
+            let param ={
+                "pageNum":this.currentPage,
+                "pageSize":this.pageSize
+            }
+            console.log(param);
+           let res =  await this.$Http.queryCitys(param);
+           console.log(res.data);
+           this.tableData = res.data.data;
+           this.pageTotal = res.data.totalSize;
+
+
+            // fetchData(this.query).then(res => {
+            //     console.log(res);
+            //     this.tableData = res.list;
+            //     this.pageTotal = res.totalSzie || 50;
+            // });
         },
+        // pageSize改变
+        handleSizeChange(size){
+            this.pageSize = size;
+            this.currentPage=1;
+            this.getData();
+        },
+        // page发生改变
+        handleCurrentChange(num){
+            console.log(num);
+            this.currentPage = num;
+            this.getData();
+        },
+        
         // 触发搜索按钮
         handleSearch() {
             console.log(this.query);
@@ -155,6 +162,7 @@ export default {
         },
         // 多选操作
         handleSelectionChange(val) {
+            console.log(val)
             this.multipleSelection = val;
         },
         delAllSelection() {
