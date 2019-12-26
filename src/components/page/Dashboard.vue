@@ -29,6 +29,7 @@
                     <el-progress :percentage="5.9" color="#f56c6c"></el-progress>
                 </el-card>
             </el-col>
+            
             <el-col :span="16">
                 <el-row :gutter="20" class="mgb20">
                     <el-col :span="8">
@@ -111,7 +112,6 @@
 
 <script>
 import Schart from 'vue-schart';
-import bus from '../common/bus';
 export default {
     name: 'dashboard',
     data() {

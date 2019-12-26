@@ -13,7 +13,7 @@ const Http = {}
 
 for (let key in cityService) {
     let api = cityService[key];
-    Http[key] = async function (
+    Http[key] = function (
         params,// 请求参数  get: url   put,post,patch:data   delete:url
         isFormData,// 标识是否是form-data请求
         config = {}  // 配置参数
@@ -33,14 +33,14 @@ for (let key in cityService) {
         let response = null;
         if (api.method === 'put' || api.method === 'post' || api.method === 'patch') {
             try {
-                response = await service[api.method](api.url, newParams, config);
+                response = service[api.method](api.url, newParams, config);
             } catch (error) {
                 response = error;
             }
         } else if (api.method === 'delete' || api.method === 'get') {
             config.params = newParams;
             try {
-                response = await service[api.method](api.url, config);
+                response = service[api.method](api.url, config);
             } catch (err) {
                 response = err;
             }
@@ -83,8 +83,9 @@ service.interceptors.response.use(
     res => {
         endLoading();
         // 服务器正确返回
+        console.log(res);
         if(res.data.code === 1){
-            console.log(res.data);
+            // console.log(res.data);
             return res.data;
         }else{
             //服务器错误返回
@@ -97,6 +98,7 @@ service.interceptors.response.use(
         endLoading();
         console.log(err);
         Message.error('服务器内部错误...');
+  
     }
 )
 

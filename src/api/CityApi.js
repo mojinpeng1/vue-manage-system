@@ -10,6 +10,14 @@ const CITY_API={
     queryCitys:{
         method:'post',
         url:'/city/queryCitys'
+    },
+    addCity:{
+        method:'post',
+        url:'/city/addCity'
+    },
+    patchDelete:{
+        method:'post',
+        url:'/city/patchDelete'
     }
 }
 

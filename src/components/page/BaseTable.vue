@@ -1,27 +1,38 @@
 <template>
     <div>
         <div class="container">
-            <div class="handle-box">
-                <el-button
-                    type="primary"
-                    icon="el-icon-delete"
-                    class="handle-del mr10"
-                    @click="delAllSelection"
-                >批量删除</el-button>
-                <el-select v-model="query.address" placeholder="地址" class="handle-select mr10">
-                    <el-option key="1" label="广东省" value="广东省"></el-option>
-                    <el-option key="2" label="湖南省" value="湖南省"></el-option>
-                </el-select>
-                <el-input v-model="query.name" placeholder="用户名" class="handle-input mr10"></el-input>
-                <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
-            </div>
+            <el-row :gutter="2">
+                <el-col :span="2">
+                    <el-button
+                        type="primary"
+                        icon="el-icon-delete"
+                        class="handle-del mr10"
+                        @click="delAllSelection"
+                    >批量删除</el-button>
+                </el-col>
+                <el-col :span="3">
+                    <el-select v-model="query.condition.address" placeholder="地址" class="handle-select mr10">
+                        <el-option key="1" label="广东省" value="广东省"></el-option>
+                        <el-option key="2" label="湖南省" value="湖南省"></el-option>
+                    </el-select>
+                </el-col>
+                <el-col :span="5">
+                    <el-input v-model="query.condition.adCode" placeholder="城市编码"></el-input>
+                </el-col>
+                <el-col :span="2">
+                    <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
+                </el-col>
+                <el-col :span="3" :offset="7">
+                    <el-button type="primary" @click="addOne">添加一行</el-button>
+                </el-col>
+            </el-row>
             <el-table
                 :data="tableData"
                 border
                 class="table"
                 ref="multipleTable"
                 :stripe="true"
-                max-height="400"
+                max-height="500"
                 header-cell-class-name="table-header"
                 @selection-change="handleSelectionChange"
             >
@@ -55,14 +66,19 @@
                 <el-pagination
                     @size-change="handleSizeChange"
                     @current-change="handleCurrentChange"
-                    :current-page="currentPage"
+                    :current-page="query.paging.pageNum"
                     :page-sizes="[20, 50, 100, 200]"
-                    :page-size="pageSize"
+                    :page-size="query.paging.pageSize"
                     layout="total, sizes, prev, pager, next, jumper"
                     :total="pageTotal"
                 ></el-pagination>
             </div>
         </div>
+
+        <!-- 新增一行 -->
+        <el-dialog title="手动添加城市" :visible.sync="cityVisible" width="40%">
+            <add-row></add-row>
+        </el-dialog>
 
         <!-- 编辑弹出框 -->
         <el-dialog title="编辑" :visible.sync="editVisible" width="30%">
@@ -84,68 +100,73 @@
 
 <script>
 import { fetchData } from '../../api/index';
+import AddRow from './AddRow';
 export default {
     name: 'basetable',
+    components: {
+        AddRow
+    },
     data() {
         return {
-            query: {
-                address: '',
-                name: '',
-                pageIndex: 1,
-                pageSize: 10
-            },
+            
             tableData: [],
             multipleSelection: [],
             delList: [],
             editVisible: false,
-            pageTotal: 10,
+            // 添加城市是否可见
+            cityVisible: false,
+            pageTotal: 20,
             form: {},
             idx: -1,
             id: -1,
-            currentPage:1,
-            pageSize:10
+            // currentPage: 1,
+            // pageSize: 20,
+            query: {
+                // 分页参数
+                paging: {
+                    pageNum: 1,
+                    pageSize: 20
+                },
+                // 查询条件
+                condition: {}
+            },
         };
     },
     created() {
+
         this.getData();
+        this.$bus.on('showAddCity', this.changeCityVisable);
     },
     methods: {
         // 获取 easy-mock 的模拟数据
-      async  getData() {
-            let param ={
-                "pageNum":this.currentPage,
-                "pageSize":this.pageSize
-            }
-            console.log(param);
-           let res =  await this.$Http.queryCitys(param);
-           console.log(res.data);
-           this.tableData = res.data.data;
-           this.pageTotal = res.data.totalSize;
+        getData() {
+            let param = this.query;
+            console.log(this.query);
 
+            this.$Http.queryCitys(param).then(
+                
+                result => {
 
-            // fetchData(this.query).then(res => {
-            //     console.log(res);
-            //     this.tableData = res.list;
-            //     this.pageTotal = res.totalSzie || 50;
-            // });
+                    
+                this.tableData = result.data.data;
+                this.pageTotal = result.data.totalSize;
+            });
         },
         // pageSize改变
-        handleSizeChange(size){
-            this.pageSize = size;
-            this.currentPage=1;
+        handleSizeChange(size) {
+            this.query.paging.pageSize = size;
+            this.query.paging.pageNum = 1;
             this.getData();
         },
         // page发生改变
-        handleCurrentChange(num){
+        handleCurrentChange(num) {
             console.log(num);
-            this.currentPage = num;
+            this.query.paging.pageNum = num;
             this.getData();
         },
-        
+
         // 触发搜索按钮
         handleSearch() {
-            console.log(this.query);
-            this.$set(this.query, 'pageIndex', 1);
             this.getData();
         },
         // 删除操作
@@ -162,17 +183,30 @@ export default {
         },
         // 多选操作
         handleSelectionChange(val) {
-            console.log(val)
             this.multipleSelection = val;
         },
         delAllSelection() {
             const length = this.multipleSelection.length;
             let str = '';
+
             this.delList = this.delList.concat(this.multipleSelection);
-            for (let i = 0; i < length; i++) {
-                str += this.multipleSelection[i].name + ' ';
-            }
-            this.$message.error(`删除了${str}`);
+            // this.$Http.patchDelete(this.delList);
+            // this.$message.success('删除成功');
+            // this.getData();
+
+            // 二次确认删除
+            this.$confirm('确定要删除吗？', '提示', {
+                type: 'warning'
+            })
+                .then(() => {
+                    console.log(this.delList);
+                    this.$Http.patchDelete(this.delList).then(() => {
+                        this.getData();
+                        this.$message.success('删除成功');
+                    });
+                })
+                .catch(() => {});
+
             this.multipleSelection = [];
         },
         // 编辑操作
@@ -191,6 +225,12 @@ export default {
         handlePageChange(val) {
             this.$set(this.query, 'pageIndex', val);
             this.getData();
+        },
+        addOne() {
+            this.cityVisible = true;
+        },
+        changeCityVisable() {
+            this.cityVisible = false;
         }
     }
 };

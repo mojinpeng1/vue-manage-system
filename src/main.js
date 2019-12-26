@@ -12,9 +12,17 @@ import 'babel-polyfill';
 import Http from './utils/request'
 // 把http挂载到vue实列中
 Vue.prototype.$Http = Http
+// Bus 注册监听
+import VueBus from 'vue-bus'
+// 引入echarts
+import echarts from 'echarts'
+import china from 'echarts/map/json/china.json'
+echarts.registerMap('china', china)
+Vue.prototype.$echarts = echarts
 
 Vue.config.productionTip = false;
 Vue.use(VueI18n);
+Vue.use(VueBus)
 Vue.use(ElementUI, {
     size: 'small'
 });

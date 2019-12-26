@@ -54,7 +54,7 @@
     </div>
 </template>
 <script>
-import bus from '../common/bus';
+
 import imgUrl from '../../assets/img/img.jpg'
 export default {
     data() {
@@ -90,7 +90,7 @@ export default {
         // 侧边栏折叠
         collapseChage() {
             this.collapse = !this.collapse;
-            bus.$emit('collapse', this.collapse);
+            this.$bus.emit('collapse', this.collapse);
         },
         // 全屏事件
         handleFullScreen() {
