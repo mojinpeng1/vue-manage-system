@@ -62,8 +62,15 @@ export default new Router({
                     // vue-schart组件
                     path: '/charts',
                     component: () => import(/* webpackChunkName: "chart" */ '../components/page/BaseCharts.vue'),
-                    meta: { title: 'schart图表' }
+                    meta: { title: 'echarts图表' }
                 },
+                {
+                    // vue-schart组件
+                    path: '/map',
+                    component: () => import(/* webpackChunkName: "chart" */ '../components/page/MapPage.vue'),
+                    meta: { title: 'china地图' }
+                },
+                
                 {
                     // 拖拽列表组件
                     path: '/drag',

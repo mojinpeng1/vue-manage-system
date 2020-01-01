@@ -1,6 +1,7 @@
 module.exports = {
     baseUrl: './',
     assetsDir: 'static',
+    Vue.config.silent = true
     productionSourceMap: false,
     // devServer: {
     //     proxy: {

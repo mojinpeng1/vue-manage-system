@@ -1,8 +1,19 @@
 <template>
-    <div>
+    <div class="chart">
         <el-row :gutter="20">
-            <el-col :span="24">
+            <el-col :span="18">
                 <div id="mapChart" :style="{width:'100%',height:'700px'}"></div>
+            </el-col>
+            <el-col :span="6">
+                <el-table
+                    :summary-method="getSummaries"
+                    show-summary
+                    :data="tableData"
+                >
+                    <el-table-column prop="province" label="省份"></el-table-column>
+                    <el-table-column prop="projectNum" label="项目数"></el-table-column>
+                    <el-table-column prop="projectWeight" label="项目体量"></el-table-column>
+                </el-table>
             </el-col>
         </el-row>
         <el-row :gutter="10">
@@ -27,34 +38,108 @@ var geoCoordMap = {
     即墨: [120.45, 36.38]
 };
 
-var data = [{ name: '淮安区', value: 199 }, { name: '南通', value: 42 }, { name: '烟台', value: 102 }, { name: '即墨', value: 81 }];
+const positionSvg =
+    'path://M506.35709 1019.485672c-41.381337 0-382.213079-378.451139-382.213078-636.520205C124.144012 172.296841 294.936076 0.752388 506.35709 0.752388c210.668626 0 382.213079 170.792065 382.213079 382.213079-0.752388 257.316679-340.831741 636.520206-382.213079 636.520205z m0-827.626745c-117.37252 0-212.173402 94.800882-212.173402 212.173402s94.800882 212.173402 212.173402 212.173402 212.173402-94.800882 212.173402-212.173402c0-56.429096-22.571639-110.601029-62.4482-149.725202-39.876561-40.628949-94.048494-62.4482-149.725202-62.4482z m0 339.326966c-69.972079 0-127.153564-57.181484-127.153563-127.153564 0-69.972079 57.181484-127.153564 127.153563-127.153563 69.972079 0 127.153564 57.181484 127.153564 127.153563 0 69.972079-57.181484 127.153564-127.153564 127.153564z m0 0';
+// var data = [{ name: '淮安区', value: 199 }, { name: '南通', value: 42 }, { name: '烟台', value: 102 }, { name: '即墨', value: 81 }];
 
-var data1 = [{ name: '淮安区', coord: [119.02, 33.62] }, { name: '南通', coord: [121.05, 32.08] },
-{ name: '烟台', coord: [121.39, 37.52], itemStyle:{
-                                 color:'yellow'
-                             }
-                             }, { name: '即墨', coord: [120.45, 36.38] , itemStyle:{
-                                 color:'yellow'
-                             }}];
+var data1 = [
+    { name: '淮安区', value: 1, projectId: 1 },
+    { name: '南通', value: 2, projectId: 2 },
+    { name: '烟台', value: 1, projectId: 3 },
+    { name: '即墨', value: 2, projectId: 4 }
+];
 
 var convertData = function(data) {
     var res = [];
     for (var i = 0; i < data.length; i++) {
         var geoCoord = geoCoordMap[data[i].name];
         if (geoCoord) {
-            res.push({
-                name: data[i].name,
-                value: geoCoord.concat(data[i].value)
-            });
+            res.push(geoCoord.concat(data[i].value).concat(data[i].projectId));
         }
+        console.log(res);
     }
     return res;
 };
 
 export default {
-  
-
+    data() {
+        return {
+            tableData: [
+                {
+                    province: '江苏省',
+                    projectNum: 15,
+                    projectWeight: 30
+                },
+                {
+                    province: '江苏省',
+                    projectNum: 15,
+                    projectWeight: 30
+                },
+                {
+                    province: '江苏省',
+                    projectNum: 15,
+                    projectWeight: 30
+                },
+                {
+                    province: '江苏省',
+                    projectNum: 15,
+                    projectWeight: 30
+                },
+                {
+                    province: '江苏省',
+                    projectNum: 15,
+                    projectWeight: 30
+                },
+                {
+                    province: '江苏省',
+                    projectNum: 15,
+                    projectWeight: 30
+                },
+                {
+                    province: '江苏省',
+                    projectNum: 15,
+                    projectWeight: 30
+                },
+                {
+                    province: '江苏省',
+                    projectNum: 15,
+                    projectWeight: 30
+                },
+                {
+                    province: '江苏省',
+                    projectNum: 15,
+                    projectWeight: 30
+                }
+            ]
+        };
+    },
     methods: {
+        getSummaries(param) {
+            const { columns, data } = param;
+            const sums = [];
+            columns.forEach((column, index) => {
+                if (index === 0) {
+                    sums[index] = '总价';
+                    return;
+                }
+                const values = data.map(item => Number(item[column.property]));
+                if (!values.every(value => isNaN(value))) {
+                    sums[index] = values.reduce((prev, curr) => {
+                        const value = Number(curr);
+                        if (!isNaN(value)) {
+                            return prev + curr;
+                        } else {
+                            return prev;
+                        }
+                    }, 0);
+                    // sums[index] += ' 元';
+                } else {
+                    sums[index] = 'N/A';
+                }
+            });
+
+            return sums;
+        },
         drawLine() {
             let myChart = this.$echarts.init(document.getElementById('myChart'), 'macarons');
             myChart.setOption({
@@ -216,29 +301,37 @@ export default {
                 title: {
                     text: '中国地图',
                     subtext: 'ggggggggggggggggggggggggggggggggg\t gggggggggggggg',
-                    left: 'center',
-                  
+                    left: 'center'
                 },
-                visualMap:{
-                    type:'piecewise',
-                    pieces:[
-                        {value:1,label:'新立项',color:'red', symbol: 'path://M506.35709 1019.485672c-41.381337 0-382.213079-378.451139-382.213078-636.520205C124.144012 172.296841 294.936076 0.752388 506.35709 0.752388c210.668626 0 382.213079 170.792065 382.213079 382.213079-0.752388 257.316679-340.831741 636.520206-382.213079 636.520205z m0-827.626745c-117.37252 0-212.173402 94.800882-212.173402 212.173402s94.800882 212.173402 212.173402 212.173402 212.173402-94.800882 212.173402-212.173402c0-56.429096-22.571639-110.601029-62.4482-149.725202-39.876561-40.628949-94.048494-62.4482-149.725202-62.4482z m0 339.326966c-69.972079 0-127.153564-57.181484-127.153563-127.153564 0-69.972079 57.181484-127.153564 127.153563-127.153563 69.972079 0 127.153564 57.181484 127.153564 127.153563 0 69.972079-57.181484 127.153564-127.153564 127.153564z m0 0'},
-                        {value:2,label:'制作中',color:'yellow', symbol: 'path://M506.35709 1019.485672c-41.381337 0-382.213079-378.451139-382.213078-636.520205C124.144012 172.296841 294.936076 0.752388 506.35709 0.752388c210.668626 0 382.213079 170.792065 382.213079 382.213079-0.752388 257.316679-340.831741 636.520206-382.213079 636.520205z m0-827.626745c-117.37252 0-212.173402 94.800882-212.173402 212.173402s94.800882 212.173402 212.173402 212.173402 212.173402-94.800882 212.173402-212.173402c0-56.429096-22.571639-110.601029-62.4482-149.725202-39.876561-40.628949-94.048494-62.4482-149.725202-62.4482z m0 339.326966c-69.972079 0-127.153564-57.181484-127.153563-127.153564 0-69.972079 57.181484-127.153564 127.153563-127.153563 69.972079 0 127.153564 57.181484 127.153564 127.153563 0 69.972079-57.181484 127.153564-127.153564 127.153564z m0 0'}
+                visualMap: {
+                    type: 'piecewise',
+                    dimension: 2, // 获取数据的维度
+                    pieces: [
+                        {
+                            value: 1,
+                            label: '新立项',
+                            color: 'red',
+                            symbol: positionSvg
+                        },
+                        {
+                            value: 2,
+                            label: '制作中',
+                            color: 'yellow',
+                            symbol: positionSvg
+                        }
                     ],
-                    left:'70%',
-                    bottom:'25%'
-
+                    left: '80%',
+                    bottom: '25%'
                 },
                 geo: {
                     show: true,
                     map: 'china',
                     label: {
-                       show:true,
-                       color:'#DFDFDF',
-                       fontStyle:'oblique',
-                       fontWeight:'lighter',
-                       fontSize:13,
-
+                        show: true,
+                        color: '#DFDFDF',
+                        fontStyle: 'oblique',
+                        fontWeight: 'lighter',
+                        fontSize: 13
                     },
                     roam: true,
                     itemStyle: {
@@ -250,55 +343,35 @@ export default {
                             areaColor: '#4499d0'
                         }
                     },
-                    silent:true,
+                    silent: true
                 },
                 series: [
+                    // 标点
                     {
-                        // symbolSize: 5,
-                        label: {
-                            show:true,
-                            color:'#fff',
-                            fontWeight:'bold',
-
-                       
-                        },
-                        itemStyle: {
-                            normal: {
-                                color: '#E30417'
-                            }
-                        },
-                        name: 'light',
+                        geoIndex: 0,
+                        // id:getid(data1),
+                        // name: 'pm2.5',
                         type: 'scatter',
                         coordinateSystem: 'geo',
-                        // data: convertData(data)
-                    },
-                    {
-                        type: 'map',
-                        map: 'china',
-                        geoIndex: 0,
-                        aspectScale: 0.75, //长宽比
-                        showLegendSymbol: false, // 存在legend时显示
-                        roam: true,
-                        itemStyle: {
+                        data: convertData(data1),
+                        symbolSize: 24,
+                        label: {
                             normal: {
-                                areaColor: '#031525',
-                                borderColor: '#FFFFFF'
+                                show: false
                             },
                             emphasis: {
-                                areaColor: '#2B91B7'
+                                show: false
                             }
                         },
-                        animation: false,
-                        markPoint:{
-                            symbol: 'path://M506.35709 1019.485672c-41.381337 0-382.213079-378.451139-382.213078-636.520205C124.144012 172.296841 294.936076 0.752388 506.35709 0.752388c210.668626 0 382.213079 170.792065 382.213079 382.213079-0.752388 257.316679-340.831741 636.520206-382.213079 636.520205z m0-827.626745c-117.37252 0-212.173402 94.800882-212.173402 212.173402s94.800882 212.173402 212.173402 212.173402 212.173402-94.800882 212.173402-212.173402c0-56.429096-22.571639-110.601029-62.4482-149.725202-39.876561-40.628949-94.048494-62.4482-149.725202-62.4482z m0 339.326966c-69.972079 0-127.153564-57.181484-127.153563-127.153564 0-69.972079 57.181484-127.153564 127.153563-127.153563 69.972079 0 127.153564 57.181484 127.153564 127.153563 0 69.972079-57.181484 127.153564-127.153564 127.153564z m0 0',
-                            symbolSize:20,
-                            data:data1,
-                             itemStyle:{
-                                 color:'red'
-                             }
+                        itemStyle: {
+                            emphasis: {
+                                borderColor: '#fff',
+                                borderWidth: 1
+                            }
+                        },
+                        tooltip: {
+                            position: [10, 10]
                         }
-                        
-                      
                     }
                 ],
                 toolbox: {
@@ -317,10 +390,9 @@ export default {
                         }
                     }
                 }
-              
             });
             mapChart.on('click', param => {
-                console.log(param);
+                console.log(param.data[2]);
             });
         }
     },
@@ -332,20 +404,17 @@ export default {
 
 
 <style scoped>
-.schart-box {
-    display: inline-block;
-    margin: 20px;
+.chart {
+    background-color: aquamarine;
+    display: inline;
 }
-.schart {
-    width: 600px;
-    height: 400px;
+
+.el-table {
+    /* background-color: blanchedalmond; */
+    margin-top: 20%;
+    display: inherit;
+    margin-right: 5%
+
 }
-.content-title {
-    clear: both;
-    font-weight: 400;
-    line-height: 50px;
-    margin: 10px 0;
-    font-size: 22px;
-    color: #1f2f3d;
-}
+
 </style>

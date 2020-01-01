@@ -112,8 +112,18 @@ export default {
                 },
                 {
                     icon: 'el-icon-pie-chart',
-                    index: 'charts',
-                    title: 'schart图表'
+                    index: '5',
+                    title: '图表',
+                    subs:[
+                        {
+                            index:'charts',
+                            title:'echarts图表'
+                        },
+                        {
+                            index:'map',
+                            title:'china地图'
+                        }
+                    ]
                 },
                 {
                     icon: 'el-icon-rank',
