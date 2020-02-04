@@ -1,8 +1,8 @@
 <template>
-    <section class="container">
-        <el-row :gutter="5">
+<section class="container">
+            <el-row :gutter="5">
             <el-col :span="3">
-                <el-select v-model="provinceValue" placeholder="省份" @change="selectProvimce">
+                <el-select v-model="provinceValue" filterable placeholder="省份" @change="selectProvimce">
                     <el-option
                         v-for="(item,index) of provincearr"
                         :key="index"
@@ -55,6 +55,7 @@ export default {
     },
     created: async function() {
         let res = await this.$Http.getProvice();
+        console.log(res);
         this.provincearr = res.data;
     },
     methods: {
@@ -87,9 +88,7 @@ export default {
                 : provinces;
             cb(result);
         }
-        //   selectProvimce(){
-        //     console.log(provinceValue);
-        // },
+     
     }
 };
 </script>

@@ -1,18 +1,19 @@
 import axios from 'axios';
-import cityService from '../api/CityApi'
+import totalService from '../api/total'
 import { Loading, Message } from 'element-ui';
 
 
 const service = axios.create({
     baseURL: 'http://localhost:8080/',
-    timeout: 5000
+    timeout: 5000,
+    withCredentials: true
 });
 
 // 封装所有请求api进入
 const Http = {}
 
-for (let key in cityService) {
-    let api = cityService[key];
+for (let key in totalService) {
+    let api = totalService[key];
     Http[key] = function (
         params,// 请求参数  get: url   put,post,patch:data   delete:url
         isFormData,// 标识是否是form-data请求
@@ -40,7 +41,13 @@ for (let key in cityService) {
         } else if (api.method === 'delete' || api.method === 'get') {
             config.params = newParams;
             try {
-                response = service[api.method](api.url, config);
+                
+                // 该处get可能存在路径传参的情况
+                // if(!api.url.endWidth('{}')){
+                    response = service[api.method](api.url, config);
+                // }else{
+                //     response = service[api.method](api.url.replace("{}",config))
+                // }
             } catch (err) {
                 response = err;
             }
@@ -50,52 +57,52 @@ for (let key in cityService) {
     }
 }
 
-let loading;
-// 页面加载效果
-function startLoading() {
-   loading= Loading.service({
-        lock: true,
-        text: '加载中...',
-        spinner: 'el-icon-loading',
-        background: 'rgba(0,0,0,0.7)'
-    })
-}
+// let loading;
+// // 页面加载效果
+// function startLoading() {
+//    loading= Loading.service({
+//         lock: true,
+//         text: '加载中...',
+//         spinner: 'el-icon-loading',
+//         background: 'rgba(0,0,0,0.7)'
+//     })
+// }
 
-function endLoading() {
-    loading.close();
-}
+// function endLoading() {
+//     loading.close();
+// }
 
 // 拦截器
 service.interceptors.request.use(
     // 请求前
     req => {
-        startLoading();
+        // startLoading();
         return req;
     },
     // 请求错误
     err => {
-        endLoading();
+        // endLoading();
         Message.error("错了哦,这是一条请求错误提示!");
     })
 
 service.interceptors.response.use(
     // 响应成功
     res => {
-        endLoading();
+        // endLoading();
         // 服务器正确返回
         console.log(res);
-        if(res.data.code === 1){
+        // if(res.data.code === 1 || res.data.code === -1){
             // console.log(res.data);
             return res.data;
-        }else{
+        // }else{
             //服务器错误返回
-            Message.error(res.data.Message)
-        }
+            // Message.error(res.data.msg)
+        // }
 
     },
     // 响应错误
     err => {
-        endLoading();
+        // endLoading();
         console.log(err);
         Message.error('服务器内部错误...');
   

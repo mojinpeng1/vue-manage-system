@@ -21,6 +21,12 @@ export default new Router({
                     meta: { title: '系统首页' }
                 },
                 {
+                    path:'/goods',
+                    component: () => import('../components/page/goods/GoodsList.vue'),
+                    meta:{title:'物品'}
+                },
+
+                {
                     path: '/icon',
                     component: () => import(/* webpackChunkName: "icon" */ '../components/page/Icon.vue'),
                     meta: { title: '自定义图标' }
@@ -106,9 +112,9 @@ export default new Router({
                     meta: { title: '403' }
                 },
                 {
-                    path: '/donate',
-                    component: () => import(/* webpackChunkName: "donate" */ '../components/page/Donate.vue'),
-                    meta: { title: '支持作者' }
+                    path: '/link',
+                    component: () => import(/* webpackChunkName: "donate" */ '../components/page/ProvinceChain.vue'),
+                    meta: { title: '省市联动' }
                 }
             ]
         },

@@ -6,21 +6,21 @@
             <el-button class="c" type="warning" round>警告按钮</el-button>
             <el-button class="d" type="danger" round>危险按钮</el-button>
 
-            <el-col :span="18" class="ssss">
+            <el-col :span="24" class="ssss">
                 <div id="mapChart" :style="{width:'100%',height:'700px'}"></div>
             </el-col>
-            <el-col :span="6">
-                <el-table
-                    :summary-method="getSummaries"
-                    show-summary
-                    :data="tableData"
-                    max-height="450px"
-                >
-                    <el-table-column prop="province" label="省份"></el-table-column>
-                    <el-table-column prop="projectNum" label="项目数"></el-table-column>
-                    <el-table-column prop="projectWeight" label="项目体量"></el-table-column>
-                </el-table>
-            </el-col>
+         
+            <el-table
+                :summary-method="getSummaries"
+                show-summary
+                :data="tableData"
+                max-height="300px"
+            >
+                <el-table-column prop="province" label="省份"></el-table-column>
+                <el-table-column prop="projectNum" label="项目数"></el-table-column>
+                <el-table-column prop="projectWeight" label="项目体量"></el-table-column>
+            </el-table>
+           
         </el-row>
         <el-row>
             <el-col :span="24"></el-col>
@@ -168,7 +168,7 @@ export default {
                         }
                     ],
                     left: '80%',
-                    bottom: '25%'
+                    bottom: '10%'
                 },
                 geo: {
                     show: true,
@@ -253,17 +253,20 @@ export default {
 <style scoped>
 .chart {
     background-color: rgb(16, 148, 224);
+    width:100%;
 }
 
 .el-table {
-    color: red;
-    margin-top: 30%;
-    margin-right: 10px;
     /* 表格字体颜色 */
     color: rgb(26, 39, 223);
-    /* 表格边框颜色 */
-    /* border: 0.5px solid #758a99; */
-    height: 500px;
+    height: 300px;
+     position: absolute;
+     z-index:1;
+     width:300px;
+     float:right;
+     top:150px;
+    right:10px;
+
 }
 
 .ssss {
@@ -276,8 +279,14 @@ export default {
 .d {
     z-index: 1;
 }
+
+.el-button {
+ margin: 0px
+}
 .a {
-    position: absolute;
+        position: absolute;
+
+    /* margin-left: 10px; */
     left: 40px;
     top: 60px;
 }

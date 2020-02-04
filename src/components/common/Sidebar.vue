@@ -61,10 +61,15 @@ export default {
                     index: 'dashboard',
                     title: '系统首页'
                 },
+                     {
+                    icon: 'el-icon-c-scale-to-original',
+                    index: '/goods',
+                    title: '物品'
+                },
                 {
-                    icon: 'el-icon-lx-redpacket_fill',
-                    index: '/donate',
-                    title: '支持作者'
+                    icon: 'el-icon-c-scale-to-original',
+                    index: '/link',
+                    title: '省市联动'
                 },
                 {
                     icon: 'el-icon-lx-cascades',

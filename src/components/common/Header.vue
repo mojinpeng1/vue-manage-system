@@ -43,9 +43,7 @@
                         <i :class="cartIcon"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown">
-                        <a href="https://github.com/lin-xin/vue-manage-system" target="_blank">
-                            <el-dropdown-item>项目仓库</el-dropdown-item>
-                        </a>
+                        <el-dropdown-item divided command="updateUserd">信息修改</el-dropdown-item>
                         <el-dropdown-item divided command="loginout">退出登录</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
@@ -71,7 +69,7 @@ export default {
     computed: {
         username() {
             let username = localStorage.getItem('ms_username');
-            return username ? username : this.name;
+            return username ? username.userName : this.name;
         },
         changeHidden(){
             return !this.message>0;
