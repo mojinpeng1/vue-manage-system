@@ -18,10 +18,11 @@
                 :width="item.width"
             ></el-table-column>
 
-            <el-table-column fixed="right" label="操作" width="180">
-                <template slot-scope="scope">
-                    <el-button type="primary" @click="editGoods(scope.row)" size="mini" round>修改</el-button>
-                    <el-button type="warning" @click="deleteGoods(scope.row)" size="mini" round>删除</el-button>
+            <el-table-column fixed="right" label="操作" width="230">
+                <template slot-scope="data">
+                    <el-button type="primary" @click="editGoods(data.row)" size="mini" round>修改</el-button>
+                    <el-button type="warning" @click="deleteGoods(data.row)" size="mini" round>删除</el-button>
+                    <el-button type="success" @click="addBorrow(data.row)" size="mini" round>借用</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -29,7 +30,7 @@
         <el-dialog
             :title="dialogTitle"
             :visible.sync="editVisable"
-            width="width"
+            width="400"
             :before-close="handleClose"
         >
             <el-form :model="goodsInfo" :rules="rules">
@@ -45,13 +46,21 @@
                 <el-button type="primary" @click="addGoods">确 定</el-button>
             </div>
         </el-dialog>
+
+    
+            <borrow-info :dialogVisable="addBorrowInfo" :borrow_info="borrow_info" @closeAdd="closeBorrow"></borrow-info>
+           
     </div>
 </template>
 
 <script>
 import showColumn from './showColumn';
+import BorrowInfo from './BorrowInfo'
 
 export default {
+    components:{
+        BorrowInfo
+    },
     data() {
         var checkCode = (rule, code, callback) => {
             if (!code) {
@@ -85,11 +94,24 @@ export default {
                 name: [{ required: true, message: '请输入物品名称', trigger: 'blur' }],
                 code: [{ validator: checkCode, trigger: 'blur' }]
             },
-            dialogTitle: '新增物品'
+            dialogTitle: '新增物品',
+            addBorrowInfo:false,
+            // 借用的物品
+            borrow_info:{},
         };
     },
 
     methods: {
+        // 关闭借用
+        closeBorrow(){
+            this.addBorrowInfo=false;
+        },
+        // 新增借用记录
+        addBorrow(row){
+            console.log(row);
+            this.addBorrowInfo=true;
+            this.borrow_info.goodsInfo = row;
+        },
         deleteGoods(row) {
             this.$confirm('确认删除?')
                 .then(() => {
