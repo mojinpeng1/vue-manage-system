@@ -15,14 +15,14 @@ const Borrow_API={
         method:'get',
         url:'/borrow/confirm'
     },
-     // 确认解除
+     // 确认借出
      borrowOutConfirm:{
         method:'get',
         url:'/borrow/confirmOut'
     },
 
      // 查询借用记录
-     closeBorrow:{
+     queryBorrow:{
         method:'post',
         url:'/borrow/queryBorrow'
     },
