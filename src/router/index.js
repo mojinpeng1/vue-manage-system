@@ -40,7 +40,14 @@ export default new Router({
                     path: '/borrow',
                     component: () => import(/* webpackChunkName: "donate" */ '../components/page/borrow/BorrowList.vue'),
                     meta: { title: '物品借用' }
+                },
+                {
+                    path: '/borrowRecord',
+                    component: () => import(/* webpackChunkName: "donate" */ '../components/page/borrow/RecordList.vue'),
+                    meta: { title: '借用记录' }
                 }
+                
+                
             ]
         },
         {

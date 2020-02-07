@@ -71,6 +71,11 @@ export default {
                     index: '/borrow',
                     title: '物品借用'
                 },
+                    {
+                    icon: 'el-icon-c-scale-to-original',
+                    index: '/borrowRecord',
+                    title: '借用记录'
+                },
                
                 
             ]

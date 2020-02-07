@@ -4,13 +4,15 @@
             :data="borrowData"
             style="width: 100%">
             
-            <el-table-column type="index" width="50" label="序号"></el-table-column>
+            <el-table-column fixed="left" type="index" width="50" label="序号"></el-table-column>
 
             <el-table-column  v-for="item in borrowColumns"    
                 :key="item.id"
                 :prop="item.prop"
                 :label="item.label"
                 :width="item.width"
+                :formatter="item.formatter"
+                :fixed="item.fixed"
                 >
             </el-table-column>
 
@@ -73,7 +75,7 @@ import showColumn from './showColumn'
                         this.$message.success("操作成功!");
                         this.queryData();
                     }else{
-                        this.$$message.error(res.msg);
+                        this.$message.error(res.msg);
                     }
                 })
             },

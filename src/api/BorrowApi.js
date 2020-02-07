@@ -31,6 +31,11 @@ const Borrow_API={
         method:'get',
         url:'/borrow/reback'
     },
+    // 查询借用记录
+    queryBorrowRecord:{
+        method:'post',
+        url:'/borrow/queryBorrowRecord'
+    }
   
     
 }

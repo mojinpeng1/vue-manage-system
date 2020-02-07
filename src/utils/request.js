@@ -4,7 +4,9 @@ import { Loading, Message } from 'element-ui';
 
 
 const service = axios.create({
-    baseURL: 'http://localhost:8080/',
+    //baseURL: 'http://localhost:8080/',
+    baseURL: 'http://101.133.136.205:8080/',
+
     timeout: 5000,
     withCredentials: true
 });
